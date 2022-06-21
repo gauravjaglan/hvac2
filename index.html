@@ -1,0 +1,4006 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>Ontospy > https://w3id.org/platoon/BuildingOntology</title>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+
+
+  <style type="text/css" media="screen">
+
+
+  body {
+	  margin-left: 6em;
+	  margin-right: 12em;
+	  text-align: justify;
+    padding: 2em 1em 2em 70px;
+    margin: 0;
+    font-family: sans-serif;
+    color: black;
+    background: white;
+    background-position: top left;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+  }
+
+  :link { color: #00C; background: transparent }
+  :visited { color: #00C; background: transparent }
+  a:active { color: #C00; background: transparent }
+
+  a:link img, a:visited img { border-style: none } /* no border on img links */
+
+  a:hover {color: white; background: #00C; }
+  a.backlink:hover {color: white; background: grey; }
+  a.greylink:hover {color: white; background: grey; }
+
+  .margintop {
+  	 margin-top: 40px;
+  }
+
+
+  dt, dd { margin-top: 10px; margin-bottom: 0 } /* opera 3.50 */
+  dt { font-weight: bold }
+
+
+  h1, h2, h3, h4, h5, h6 { text-align: left }
+  /* background should be transparent, but WebTV has a bug */
+  h1, h2, h3, h4, h5 { color: #005A9C; background: white }
+  h1.title { font: 200% sans-serif }
+  h1 { font: 170% sans-serif }
+  h2 { font: 140% sans-serif }
+  h3 { font: 120% sans-serif }
+  h4 { font: bold 100% sans-serif }
+  h5 { font: italic 100% sans-serif }
+  h6 { font: small-caps 100% sans-serif }
+
+  .hide { display: none }
+
+
+  pre { margin-left: 2em }
+
+  pre, code { font-family: monospace } /* navigator 4 requires this */
+
+
+  .implementation {
+  	background: aliceblue;
+	padding: 10px;
+	margin-top: 5px;
+  }
+
+  fieldset {
+	  margin-top: 20px;
+	  padding: 13px;
+      text-align: left;
+  }
+
+  legend {
+	  text-transform: uppercase;
+  }
+
+  .entity-div {
+	  margin: 55px 10px 30px 10px;
+  }
+
+  .entity-section {
+	  margin-bottom: 0px;
+  }
+
+
+  a.backlink {
+	  font-size: 80%;
+	  color: grey;
+  }
+
+  a.greylink {
+	  color: grey;
+  }
+
+
+   .implementation_title {
+
+       font-weight: bold;
+       font-size: 100%;
+   }
+
+.section-desc {
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+
+
+
+        .tree-container {
+            width: 3000em;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+		.tree {margin: 10px 0px 30px -20px; padding: 0; display: inline-block;}
+
+		.tree ul {
+			padding-top: 20px; position: relative;
+
+			transition: all 0.5s;
+			-webkit-transition: all 0.5s;
+			-moz-transition: all 0.5s;
+		}
+
+		.tree li {
+			float: left; text-align: center;
+			list-style-type: none;
+			position: relative;
+			padding: 20px 5px 0 5px;
+
+			transition: all 0.5s;
+			-webkit-transition: all 0.5s;
+			-moz-transition: all 0.5s;
+		}
+
+		/*We will use ::before and ::after to draw the connectors*/
+
+		.tree li::before, .tree li::after{
+			content: '';
+			position: absolute; top: 0; right: 50%;
+			border-top: 1px solid #ccc;
+			width: 50%; height: 20px;
+		}
+		.tree li::after{
+			right: auto; left: 50%;
+			border-left: 1px solid #ccc;
+		}
+
+		/*We need to remove left-right connectors from elements without
+		any siblings*/
+		.tree li:only-child::after, .tree li:only-child::before {
+			display: none;
+		}
+
+		/*Remove space from the top of single children*/
+		.tree li:only-child{ padding-top: 0;}
+
+		/*Remove left connector from first child and
+		right connector from last child*/
+		.tree li:first-child::before, .tree li:last-child::after{
+			border: 0 none;
+		}
+		/*Adding back the vertical connector to the last nodes*/
+		.tree li:last-child::before{
+			border-right: 1px solid #ccc;
+			border-radius: 0 5px 0 0;
+			-webkit-border-radius: 0 5px 0 0;
+			-moz-border-radius: 0 5px 0 0;
+		}
+		.tree li:first-child::after{
+			border-radius: 5px 0 0 0;
+			-webkit-border-radius: 5px 0 0 0;
+			-moz-border-radius: 5px 0 0 0;
+		}
+
+		/*Time to add downward connectors from parents*/
+		.tree ul ul::before{
+			content: '';
+			position: absolute; top: 0; left: 50%;
+			border-left: 1px solid #ccc;
+			width: 0; height: 20px;
+		}
+
+		.tree li a{
+			border: 1px solid #ccc;
+			padding: 5px 10px;
+			text-decoration: none;
+			color: #666;
+			font-family: arial, verdana, tahoma;
+			font-size: 11px;
+			display: inline-block;
+
+			border-radius: 5px;
+			-webkit-border-radius: 5px;
+			-moz-border-radius: 5px;
+
+			transition: all 0.5s;
+			-webkit-transition: all 0.5s;
+			-moz-transition: all 0.5s;
+		}
+
+		/*Time for some hover effects*/
+		/*We will apply the hover effect the the lineage of the element also*/
+		.tree li a:hover, .tree li a:hover+ul li a {
+			background: #c8e4f8; color: #000; border: 1px solid #94a0b4;
+		}
+		/*Connector styles on hover*/
+		.tree li a:hover+ul li::after,
+		.tree li a:hover+ul li::before,
+		.tree li a:hover+ul::before,
+		.tree li a:hover+ul ul::before{
+			border-color:  #94a0b4;
+		}
+
+		/*Thats all. I hope you enjoyed it.
+		Thanks :)*/
+
+
+  </style>
+
+
+</head>
+
+
+<body>
+
+
+    
+	<h1 class="title">Graph:&nbsp;<a href="" target="_blank">https://w3id.org/platoon/BuildingOntology</a></h1>
+	<h3>The  Building vocabulary for the  Platoon  project.</h3>
+
+	<p><small>Ontology documentation automatically generated by <a class="greylink" href="http://lambdamusic.github.io/Ontospy/">Ontospy</a> on 21st June 2022 18:58</small></p>
+
+
+
+	
+
+
+	<hr class="margintop">
+
+	<h1><a name="toc">&nbsp;</a>Table of Content</h1>
+
+	<ul>
+		
+		<li><a href="#a-z">A-Z of Terms</a></li>
+		<li><a href="#classes">Classes</a></li>
+		<li><a href="#objproperties">Object Properties</a></li>
+		<li><a href="#dataproperties">Datatype properties</a></li>
+		<li><a href="#annotationproperties">Annotation properties</a></li>
+		
+
+		
+
+	</ul>
+
+
+
+
+	
+
+	
+
+
+
+
+	
+
+	<hr class="margintop">
+	<h1><a  name="a-z">&nbsp;</a>A-Z of terms</h1>
+
+	<div id="azterms">
+
+	This is a complete alphabetical A-Z index of all terms, by main logical type.
+
+	
+		<fieldset> <legend>Classes (38)</legend>
+			<span><a href="#bot:Floor">bot:Floor</a></span>
+			|
+			<span><a href="#bot:Zone">bot:Zone</a></span>
+			|
+			<span><a href="#cim:Area">cim:Area</a></span>
+			|
+			<span><a href="#cim:Location">cim:Location</a></span>
+			|
+			<span><a href="#foaf:Person">foaf:Person</a></span>
+			|
+			<span><a href="#geonames:Feature">geonames:Feature</a></span>
+			|
+			<span><a href="#gsp:Geometry">gsp:Geometry</a></span>
+			|
+			<span><a href="#plt:BuildingGroup">plt:BuildingGroup</a></span>
+			|
+			<span><a href="#plt:Canteen">plt:Canteen</a></span>
+			|
+			<span><a href="#plt:ClimateZone">plt:ClimateZone</a></span>
+			|
+			<span><a href="#plt:DataCenter">plt:DataCenter</a></span>
+			|
+			<span><a href="#plt:IndoorZone">plt:IndoorZone</a></span>
+			|
+			<span><a href="#plt:LogisticCenter">plt:LogisticCenter</a></span>
+			|
+			<span><a href="#plt:NonResidentialBuilding">plt:NonResidentialBuilding</a></span>
+			|
+			<span><a href="#plt:OutdoorZone">plt:OutdoorZone</a></span>
+			|
+			<span><a href="#plt:ResidentialBuilding">plt:ResidentialBuilding</a></span>
+			|
+			<span><a href="#plt:Retail">plt:Retail</a></span>
+			|
+			<span><a href="#plt:TranformerCenter">plt:TranformerCenter</a></span>
+			|
+			<span><a href="#s4bldg:Building">s4bldg:Building</a></span>
+			|
+			<span><a href="#sch:City">sch:City</a></span>
+			|
+			<span><a href="#sch:Country">sch:Country</a></span>
+			|
+			<span><a href="#sch:Place">sch:Place</a></span>
+			|
+			<span><a href="#seas:AreaProperty">seas:AreaProperty</a></span>
+			|
+			<span><a href="#seas:Building">seas:Building</a></span>
+			|
+			<span><a href="#seas:BuildingSpace">seas:BuildingSpace</a></span>
+			|
+			<span><a href="#seas:BuildingStorey">seas:BuildingStorey</a></span>
+			|
+			<span><a href="#seas:Construction">seas:Construction</a></span>
+			|
+			<span><a href="#seas:Corridor">seas:Corridor</a></span>
+			|
+			<span><a href="#seas:EducationalBuilding">seas:EducationalBuilding</a></span>
+			|
+			<span><a href="#seas:FeatureOfInterest">seas:FeatureOfInterest</a></span>
+			|
+			<span><a href="#seas:Lobby">seas:Lobby</a></span>
+			|
+			<span><a href="#seas:NonResidentalBuilding">seas:NonResidentalBuilding</a></span>
+			|
+			<span><a href="#seas:OfficeBuilding">seas:OfficeBuilding</a></span>
+			|
+			<span><a href="#seas:ResidentalBuilding">seas:ResidentalBuilding</a></span>
+			|
+			<span><a href="#seas:System">seas:System</a></span>
+			|
+			<span><a href="#seas:Wall">seas:Wall</a></span>
+			|
+			<span><a href="#seas:Zone">seas:Zone</a></span>
+			|
+			<span><a href="#voaf:Vocabulary">voaf:Vocabulary</a></span>
+			
+			
+		</fieldset>
+	
+
+	
+
+	<fieldset> <legend>Object Properties (9)</legend>
+		&nbsp;<a href="#gsp:hasGeometry">gsp:hasGeometry</a>
+		|  <a href="#sch:containedInPlace">sch:containedInPlace</a>
+		|  <a href="#sch:containsPlace">sch:containsPlace</a>
+		|  <a href="#bot:containsZone">bot:containsZone</a>
+		|  <a href="#bot:hasStorey">bot:hasStorey</a>
+		|  <a href="#s4bldg:contains">s4bldg:contains</a>
+		|  <a href="#s4bldg:isContainedIn">s4bldg:isContainedIn</a>
+		|  <a href="#seas:isMemberOf">seas:isMemberOf</a>
+		|  <a href="#seas:subSystemOf">seas:subSystemOf</a>
+		  
+	</fieldset>
+
+	
+
+	
+	<fieldset> <legend>Datatype Properties (1)</legend>
+		&nbsp;<a href="#foaf:name">foaf:name</a>
+		  
+	</fieldset>
+	
+
+	
+
+		<fieldset> <legend>Annotation Properties (10)</legend>
+			&nbsp;<a href="#dcterms:contributor">dcterms:contributor</a>
+			|  <a href="#dcterms:creator">dcterms:creator</a>
+			|  <a href="#dcterms:description">dcterms:description</a>
+			|  <a href="#dcterms:issued">dcterms:issued</a>
+			|  <a href="#dcterms:license">dcterms:license</a>
+			|  <a href="#dcterms:modified">dcterms:modified</a>
+			|  <a href="#dcterms:title">dcterms:title</a>
+			|  <a href="#vann:preferredNamespacePrefix">vann:preferredNamespacePrefix</a>
+			|  <a href="#vann:preferredNamespaceUri">vann:preferredNamespaceUri</a>
+			|  <a href="#vs:term_status">vs:term_status</a>
+			  
+		</fieldset>
+
+	
+
+	
+
+
+	</div>
+
+
+
+	
+
+
+	
+
+		<hr class="margintop">
+		<h1 class="margintop" ><a name="classes">&nbsp;</a>Classes</h1>
+
+			
+
+			<div class="entity-div">
+
+
+
+				<h3 class="entity-section">Class: <a name="bot:Floor" href="#bot:Floor">bot:Floor</a>
+					<small>&nbsp;&nbsp;<a href="#a-z" class="backlink">back to top</a></small>
+				</h3>
+				<hr>
+
+
+                <div class="tree-container">
+                <div class="tree">
+                    <ul>
+                        
+
+                            <li href="#"><a>owl:Thing</a>
+
+                            <ul>
+                              <li><a style="font-weight: bold;">bot:Floor</a>
+
+                              
+                                </li>
+
+                            </ul>
+
+                            </li>
+                        
+
+                    </ul>
+                </div>
+                </div>
+
+
+                
+                <p class="section-desc">
+                    <small>NOTE</small> bot:Floor is a leaf node.</p>
+                
+
+				<p class="section-desc"><b>Description</b>
+                    <br>
+                    
+                </p>
+
+                
+                    <p class="section-desc"><b>Inherits from:</b> <br />owl:Thing</p>
+				
+
+
+
+				
+
+				
+
+
+                <small class="implementation_title">Implementation:</small>
+				<div class="implementation">
+					<code><p>@prefix bot: &lt;https://w3id.org/bot#&gt; .<br>@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .</p>
+
+<p>bot:Floor a owl:Class .</p>
+
+<p></p></code>
+				</div>
+
+			</div>
+
+
+			
+
+			<div class="entity-div">
+
+
+
+				<h3 class="entity-section">Class: <a name="bot:Zone" href="#bot:Zone">bot:Zone</a>
+					<small>&nbsp;&nbsp;<a href="#a-z" class="backlink">back to top</a></small>
+				</h3>
+				<hr>
+
+
+                <div class="tree-container">
+                <div class="tree">
+                    <ul>
+                        
+
+                            <li href="#"><a>owl:Thing</a>
+
+                            <ul>
+                              <li><a style="font-weight: bold;">bot:Zone</a>
+
+                              
+                                </li>
+
+                            </ul>
+
+                            </li>
+                        
+
+                    </ul>
+                </div>
+                </div>
+
+
+                
+                <p class="section-desc">
+                    <small>NOTE</small> bot:Zone is a leaf node.</p>
+                
+
+				<p class="section-desc"><b>Description</b>
+                    <br>
+                    
+                </p>
+
+                
+                    <p class="section-desc"><b>Inherits from:</b> <br />owl:Thing</p>
+				
+
+
+
+				
+
+				
+
+
+                <small class="implementation_title">Implementation:</small>
+				<div class="implementation">
+					<code><p>@prefix bot: &lt;https://w3id.org/bot#&gt; .<br>@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .</p>
+
+<p>bot:Zone a owl:Class .</p>
+
+<p></p></code>
+				</div>
+
+			</div>
+
+
+			
+
+			<div class="entity-div">
+
+
+
+				<h3 class="entity-section">Class: <a name="cim:Area" href="#cim:Area">cim:Area</a>
+					<small>&nbsp;&nbsp;<a href="#a-z" class="backlink">back to top</a></small>
+				</h3>
+				<hr>
+
+
+                <div class="tree-container">
+                <div class="tree">
+                    <ul>
+                        
+
+                            <li href="#"><a>owl:Thing</a>
+
+                            <ul>
+                              <li><a style="font-weight: bold;">cim:Area</a>
+
+                              
+                                </li>
+
+                            </ul>
+
+                            </li>
+                        
+
+                    </ul>
+                </div>
+                </div>
+
+
+                
+                <p class="section-desc">
+                    <small>NOTE</small> cim:Area is a leaf node.</p>
+                
+
+				<p class="section-desc"><b>Description</b>
+                    <br>
+                    
+                </p>
+
+                
+                    <p class="section-desc"><b>Inherits from:</b> <br />owl:Thing</p>
+				
+
+
+
+				
+
+				
+
+
+                <small class="implementation_title">Implementation:</small>
+				<div class="implementation">
+					<code><p>@prefix cim: &lt;http://ontology.tno.nl/cerise/cim-profile#&gt; .<br>@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .</p>
+
+<p>cim:Area a owl:Class .</p>
+
+<p></p></code>
+				</div>
+
+			</div>
+
+
+			
+
+			<div class="entity-div">
+
+
+
+				<h3 class="entity-section">Class: <a name="cim:Location" href="#cim:Location">cim:Location</a>
+					<small>&nbsp;&nbsp;<a href="#a-z" class="backlink">back to top</a></small>
+				</h3>
+				<hr>
+
+
+                <div class="tree-container">
+                <div class="tree">
+                    <ul>
+                        
+
+                            <li href="#"><a>owl:Thing</a>
+
+                            <ul>
+                              <li><a style="font-weight: bold;">cim:Location</a>
+
+                              
+                                </li>
+
+                            </ul>
+
+                            </li>
+                        
+
+                    </ul>
+                </div>
+                </div>
+
+
+                
+                <p class="section-desc">
+                    <small>NOTE</small> cim:Location is a leaf node.</p>
+                
+
+				<p class="section-desc"><b>Description</b>
+                    <br>
+                    
+                </p>
+
+                
+                    <p class="section-desc"><b>Inherits from:</b> <br />owl:Thing</p>
+				
+
+
+
+				
+
+				
+
+
+                <small class="implementation_title">Implementation:</small>
+				<div class="implementation">
+					<code><p>@prefix cim: &lt;http://ontology.tno.nl/cerise/cim-profile#&gt; .<br>@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .</p>
+
+<p>cim:Location a owl:Class .</p>
+
+<p></p></code>
+				</div>
+
+			</div>
+
+
+			
+
+			<div class="entity-div">
+
+
+
+				<h3 class="entity-section">Class: <a name="foaf:Person" href="#foaf:Person">foaf:Person</a>
+					<small>&nbsp;&nbsp;<a href="#a-z" class="backlink">back to top</a></small>
+				</h3>
+				<hr>
+
+
+                <div class="tree-container">
+                <div class="tree">
+                    <ul>
+                        
+
+                            <li href="#"><a>owl:Thing</a>
+
+                            <ul>
+                              <li><a style="font-weight: bold;">foaf:Person</a>
+
+                              
+                                </li>
+
+                            </ul>
+
+                            </li>
+                        
+
+                    </ul>
+                </div>
+                </div>
+
+
+                
+                <p class="section-desc">
+                    <small>NOTE</small> foaf:Person is a leaf node.</p>
+                
+
+				<p class="section-desc"><b>Description</b>
+                    <br>
+                    
+                </p>
+
+                
+                    <p class="section-desc"><b>Inherits from:</b> <br />owl:Thing</p>
+				
+
+
+
+				
+
+				
+
+
+                <small class="implementation_title">Implementation:</small>
+				<div class="implementation">
+					<code><p>@prefix foaf: &lt;http://xmlns.com/foaf/0.1/&gt; .<br>@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .</p>
+
+<p>foaf:Person a owl:Class .</p>
+
+<p></p></code>
+				</div>
+
+			</div>
+
+
+			
+
+			<div class="entity-div">
+
+
+
+				<h3 class="entity-section">Class: <a name="geonames:Feature" href="#geonames:Feature">geonames:Feature</a>
+					<small>&nbsp;&nbsp;<a href="#a-z" class="backlink">back to top</a></small>
+				</h3>
+				<hr>
+
+
+                <div class="tree-container">
+                <div class="tree">
+                    <ul>
+                        
+
+                            <li href="#"><a>owl:Thing</a>
+
+                            <ul>
+                              <li><a style="font-weight: bold;">geonames:Feature</a>
+
+                              
+                                </li>
+
+                            </ul>
+
+                            </li>
+                        
+
+                    </ul>
+                </div>
+                </div>
+
+
+                
+                <p class="section-desc">
+                    <small>NOTE</small> geonames:Feature is a leaf node.</p>
+                
+
+				<p class="section-desc"><b>Description</b>
+                    <br>
+                    
+                </p>
+
+                
+                    <p class="section-desc"><b>Inherits from:</b> <br />owl:Thing</p>
+				
+
+
+
+				
+
+				
+
+
+                <small class="implementation_title">Implementation:</small>
+				<div class="implementation">
+					<code><p>@prefix geonames: &lt;http://www.geonames.org/ontology#&gt; .<br>@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .</p>
+
+<p>geonames:Feature a owl:Class .</p>
+
+<p></p></code>
+				</div>
+
+			</div>
+
+
+			
+
+			<div class="entity-div">
+
+
+
+				<h3 class="entity-section">Class: <a name="gsp:Geometry" href="#gsp:Geometry">gsp:Geometry</a>
+					<small>&nbsp;&nbsp;<a href="#a-z" class="backlink">back to top</a></small>
+				</h3>
+				<hr>
+
+
+                <div class="tree-container">
+                <div class="tree">
+                    <ul>
+                        
+
+                            <li href="#"><a>owl:Thing</a>
+
+                            <ul>
+                              <li><a style="font-weight: bold;">gsp:Geometry</a>
+
+                              
+                                </li>
+
+                            </ul>
+
+                            </li>
+                        
+
+                    </ul>
+                </div>
+                </div>
+
+
+                
+                <p class="section-desc">
+                    <small>NOTE</small> gsp:Geometry is a leaf node.</p>
+                
+
+				<p class="section-desc"><b>Description</b>
+                    <br>
+                    
+                </p>
+
+                
+                    <p class="section-desc"><b>Inherits from:</b> <br />owl:Thing</p>
+				
+
+
+
+				
+
+				
+
+
+                <small class="implementation_title">Implementation:</small>
+				<div class="implementation">
+					<code><p>@prefix gsp: &lt;http://www.opengis.net/ont/geosparql#&gt; .<br>@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .</p>
+
+<p>gsp:Geometry a owl:Class .</p>
+
+<p></p></code>
+				</div>
+
+			</div>
+
+
+			
+
+			<div class="entity-div">
+
+
+
+				<h3 class="entity-section">Class: <a name="plt:BuildingGroup" href="#plt:BuildingGroup">plt:BuildingGroup</a>
+					<small>&nbsp;&nbsp;<a href="#a-z" class="backlink">back to top</a></small>
+				</h3>
+				<hr>
+
+
+                <div class="tree-container">
+                <div class="tree">
+                    <ul>
+                        
+
+                            <li href="#"><a>owl:Thing</a>
+
+                            <ul>
+                              <li><a style="font-weight: bold;">plt:BuildingGroup</a>
+
+                              
+                                </li>
+
+                            </ul>
+
+                            </li>
+                        
+
+                    </ul>
+                </div>
+                </div>
+
+
+                
+                <p class="section-desc">
+                    <small>NOTE</small> plt:BuildingGroup is a leaf node.</p>
+                
+
+				<p class="section-desc"><b>Description</b>
+                    <br>
+                    A Building group is a group which has member only Buildings.
+                </p>
+
+                
+                    <p class="section-desc"><b>Inherits from:</b> <br />owl:Thing</p>
+				
+
+
+
+				
+
+				
+
+
+                <small class="implementation_title">Implementation:</small>
+				<div class="implementation">
+					<code><p>@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .<br>@prefix plt: &lt;https://w3id.org/platoon/&gt; .<br>@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .<br>@prefix seas: &lt;https://w3id.org/seas/&gt; .<br>@prefix vs: &lt;http://www.w3.org/2003/06/sw-vocab-status/ns#&gt; .</p>
+
+<p>plt:BuildingGroup a owl:Class ;<br>    rdfs:label &quot;Building Group&quot;@en ;<br>    rdfs:comment &quot;A Building group is a group which has member only Buildings.&quot;@en ;<br>    rdfs:isDefinedBy plt:BuildingOntology ;<br>    rdfs:subClassOf [ a owl:Restriction ;<br>            owl:allValuesFrom seas:Building ;<br>            owl:onProperty seas:member ] ;<br>    vs:term_status &quot;testing&quot; .</p>
+
+<p></p></code>
+				</div>
+
+			</div>
+
+
+			
+
+			<div class="entity-div">
+
+
+
+				<h3 class="entity-section">Class: <a name="plt:Canteen" href="#plt:Canteen">plt:Canteen</a>
+					<small>&nbsp;&nbsp;<a href="#a-z" class="backlink">back to top</a></small>
+				</h3>
+				<hr>
+
+
+                <div class="tree-container">
+                <div class="tree">
+                    <ul>
+                        
+                            <li> <a href="#seas:BuildingSpace">seas:BuildingSpace</a>
+
+                            <ul>
+
+                              <li><a style="font-weight: bold;">plt:Canteen</a>
+
+                              
+                                </li>
+
+                            </ul>
+
+                            </li>
+                            
+
+                        
+
+                    </ul>
+                </div>
+                </div>
+
+
+                
+                <p class="section-desc">
+                    <small>NOTE</small> plt:Canteen is a leaf node.</p>
+                
+
+				<p class="section-desc"><b>Description</b>
+                    <br>
+                    A Canteen is a small cafeteria or snack bar, especially one in a military establishment, school, or place of work. (source: Wikipedia)
+                </p>
+
+                
+					<p class="section-desc"><b>Inherits from <small>(1)</small>:</b>
+                        <br />
+                        <a href="#seas:BuildingSpace">seas:BuildingSpace</a>  
+                    </p>
+				
+
+
+
+				
+
+				
+
+
+                <small class="implementation_title">Implementation:</small>
+				<div class="implementation">
+					<code><p>@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .<br>@prefix plt: &lt;https://w3id.org/platoon/&gt; .<br>@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .<br>@prefix seas: &lt;https://w3id.org/seas/&gt; .<br>@prefix vs: &lt;http://www.w3.org/2003/06/sw-vocab-status/ns#&gt; .</p>
+
+<p>plt:Canteen a owl:Class ;<br>    rdfs:label &quot;Canteen&quot;@en ;<br>    rdfs:comment &quot;A Canteen is a small cafeteria or snack bar, especially one in a military establishment, school, or place of work. (source: Wikipedia)&quot;@en ;<br>    rdfs:isDefinedBy plt:BuildingOntology ;<br>    rdfs:subClassOf seas:BuildingSpace ;<br>    vs:term_status &quot;testing&quot; .</p>
+
+<p></p></code>
+				</div>
+
+			</div>
+
+
+			
+
+			<div class="entity-div">
+
+
+
+				<h3 class="entity-section">Class: <a name="plt:ClimateZone" href="#plt:ClimateZone">plt:ClimateZone</a>
+					<small>&nbsp;&nbsp;<a href="#a-z" class="backlink">back to top</a></small>
+				</h3>
+				<hr>
+
+
+                <div class="tree-container">
+                <div class="tree">
+                    <ul>
+                        
+                            <li> <a href="#sch:Place">sch:Place</a>
+
+                            <ul>
+
+                              <li><a style="font-weight: bold;">plt:ClimateZone</a>
+
+                              
+                                </li>
+
+                            </ul>
+
+                            </li>
+                            
+
+                        
+
+                    </ul>
+                </div>
+                </div>
+
+
+                
+                <p class="section-desc">
+                    <small>NOTE</small> plt:ClimateZone is a leaf node.</p>
+                
+
+				<p class="section-desc"><b>Description</b>
+                    <br>
+                     Climate zones are areas with distinct climates, which occur in east-west direction around the Earth, and can be classified using different climatic parametres. Generally, climate zones are belt-shaped and circular around the Poles (see picture on the right). In some areas, climate zones can be interrupted by mountains or oceans.(source: meteoblue)
+                  Climate zone can cantain in place or/and contain Place. For Example:
+                  &lt;climateZone1&gt; sch:containedInPlace &lt;France&gt;  ,
+                  &lt;climateZone1&gt; sch:containsPlace &lt;Paris&gt; 
+                </p>
+
+                
+					<p class="section-desc"><b>Inherits from <small>(1)</small>:</b>
+                        <br />
+                        <a href="#sch:Place">sch:Place</a>  
+                    </p>
+				
+
+
+
+				
+
+				
+
+
+                <small class="implementation_title">Implementation:</small>
+				<div class="implementation">
+					<code><p>@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .<br>@prefix plt: &lt;https://w3id.org/platoon/&gt; .<br>@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .<br>@prefix sch: &lt;https://schema.org/&gt; .<br>@prefix vs: &lt;http://www.w3.org/2003/06/sw-vocab-status/ns#&gt; .</p>
+
+<p>plt:ClimateZone a owl:Class ;<br>    rdfs:label &quot;Climate Zone&quot;@en ;<br>    rdfs:comment &quot;&quot;&quot; Climate zones are areas with distinct climates, which occur in east-west direction around the Earth, and can be classified using different climatic parametres. Generally, climate zones are belt-shaped and circular around the Poles (see picture on the right). In some areas, climate zones can be interrupted by mountains or oceans.(source: meteoblue)<br>                  Climate zone can cantain in place or/and contain Place. For Example:<br>                  &lt;climateZone1&gt; sch:containedInPlace &lt;France&gt;  ,<br>                  &lt;climateZone1&gt; sch:containsPlace &lt;Paris&gt; &quot;&quot;&quot;@en ;<br>    rdfs:isDefinedBy plt:BuildingOntology ;<br>    rdfs:subClassOf sch:Place ;<br>    vs:term_status &quot;testing&quot; .</p>
+
+<p></p></code>
+				</div>
+
+			</div>
+
+
+			
+
+			<div class="entity-div">
+
+
+
+				<h3 class="entity-section">Class: <a name="plt:DataCenter" href="#plt:DataCenter">plt:DataCenter</a>
+					<small>&nbsp;&nbsp;<a href="#a-z" class="backlink">back to top</a></small>
+				</h3>
+				<hr>
+
+
+                <div class="tree-container">
+                <div class="tree">
+                    <ul>
+                        
+                            <li> <a href="#plt:NonResidentialBuilding">plt:NonResidentialBuilding</a>
+
+                            <ul>
+
+                              <li><a style="font-weight: bold;">plt:DataCenter</a>
+
+                              
+                                </li>
+
+                            </ul>
+
+                            </li>
+                            
+
+                        
+
+                    </ul>
+                </div>
+                </div>
+
+
+                
+                <p class="section-desc">
+                    <small>NOTE</small> plt:DataCenter is a leaf node.</p>
+                
+
+				<p class="section-desc"><b>Description</b>
+                    <br>
+                    A data center is a building, dedicated space within a building used to house computer systems and associated components, such as telecommunications and storage systems. (source: Wikipedia)
+                </p>
+
+                
+					<p class="section-desc"><b>Inherits from <small>(1)</small>:</b>
+                        <br />
+                        <a href="#plt:NonResidentialBuilding">plt:NonResidentialBuilding</a>  
+                    </p>
+				
+
+
+
+				
+
+				
+
+
+                <small class="implementation_title">Implementation:</small>
+				<div class="implementation">
+					<code><p>@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .<br>@prefix plt: &lt;https://w3id.org/platoon/&gt; .<br>@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .<br>@prefix vs: &lt;http://www.w3.org/2003/06/sw-vocab-status/ns#&gt; .</p>
+
+<p>plt:DataCenter a owl:Class ;<br>    rdfs:label &quot;Data Center&quot;@en ;<br>    rdfs:comment &quot;A data center is a building, dedicated space within a building used to house computer systems and associated components, such as telecommunications and storage systems. (source: Wikipedia)&quot;@en ;<br>    rdfs:isDefinedBy plt:BuildingOntology ;<br>    rdfs:subClassOf plt:NonResidentialBuilding ;<br>    vs:term_status &quot;testing&quot; .</p>
+
+<p></p></code>
+				</div>
+
+			</div>
+
+
+			
+
+			<div class="entity-div">
+
+
+
+				<h3 class="entity-section">Class: <a name="plt:IndoorZone" href="#plt:IndoorZone">plt:IndoorZone</a>
+					<small>&nbsp;&nbsp;<a href="#a-z" class="backlink">back to top</a></small>
+				</h3>
+				<hr>
+
+
+                <div class="tree-container">
+                <div class="tree">
+                    <ul>
+                        
+                            <li> <a href="#seas:Zone">seas:Zone</a>
+
+                            <ul>
+
+                              <li><a style="font-weight: bold;">plt:IndoorZone</a>
+
+                              
+                                </li>
+
+                            </ul>
+
+                            </li>
+                            
+
+                        
+
+                    </ul>
+                </div>
+                </div>
+
+
+                
+                <p class="section-desc">
+                    <small>NOTE</small> plt:IndoorZone is a leaf node.</p>
+                
+
+				<p class="section-desc"><b>Description</b>
+                    <br>
+                    An indoor zone is an under cover Zone
+                </p>
+
+                
+					<p class="section-desc"><b>Inherits from <small>(1)</small>:</b>
+                        <br />
+                        <a href="#seas:Zone">seas:Zone</a>  
+                    </p>
+				
+
+
+
+				
+
+				
+
+
+                <small class="implementation_title">Implementation:</small>
+				<div class="implementation">
+					<code><p>@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .<br>@prefix plt: &lt;https://w3id.org/platoon/&gt; .<br>@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .<br>@prefix seas: &lt;https://w3id.org/seas/&gt; .<br>@prefix vs: &lt;http://www.w3.org/2003/06/sw-vocab-status/ns#&gt; .</p>
+
+<p>plt:IndoorZone a owl:Class ;<br>    rdfs:label &quot;Indoor Zone&quot;@en ;<br>    rdfs:comment &quot;An indoor zone is an under cover Zone&quot;@en ;<br>    rdfs:isDefinedBy plt:BuildingOntology ;<br>    rdfs:subClassOf seas:Zone ;<br>    vs:term_status &quot;testing&quot; .</p>
+
+<p></p></code>
+				</div>
+
+			</div>
+
+
+			
+
+			<div class="entity-div">
+
+
+
+				<h3 class="entity-section">Class: <a name="plt:LogisticCenter" href="#plt:LogisticCenter">plt:LogisticCenter</a>
+					<small>&nbsp;&nbsp;<a href="#a-z" class="backlink">back to top</a></small>
+				</h3>
+				<hr>
+
+
+                <div class="tree-container">
+                <div class="tree">
+                    <ul>
+                        
+                            <li> <a href="#plt:NonResidentialBuilding">plt:NonResidentialBuilding</a>
+
+                            <ul>
+
+                              <li><a style="font-weight: bold;">plt:LogisticCenter</a>
+
+                              
+                                </li>
+
+                            </ul>
+
+                            </li>
+                            
+
+                        
+
+                    </ul>
+                </div>
+                </div>
+
+
+                
+                <p class="section-desc">
+                    <small>NOTE</small> plt:LogisticCenter is a leaf node.</p>
+                
+
+				<p class="section-desc"><b>Description</b>
+                    <br>
+                    Logistic center is a building that is administrated by one company and allows other companies to lease warehouse space to carry out warehousing and logistics services.(source: Wikipedia)
+                </p>
+
+                
+					<p class="section-desc"><b>Inherits from <small>(1)</small>:</b>
+                        <br />
+                        <a href="#plt:NonResidentialBuilding">plt:NonResidentialBuilding</a>  
+                    </p>
+				
+
+
+
+				
+
+				
+
+
+                <small class="implementation_title">Implementation:</small>
+				<div class="implementation">
+					<code><p>@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .<br>@prefix plt: &lt;https://w3id.org/platoon/&gt; .<br>@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .<br>@prefix vs: &lt;http://www.w3.org/2003/06/sw-vocab-status/ns#&gt; .</p>
+
+<p>plt:LogisticCenter a owl:Class ;<br>    rdfs:label &quot;Logistic Center&quot;@en ;<br>    rdfs:comment &quot;Logistic center is a building that is administrated by one company and allows other companies to lease warehouse space to carry out warehousing and logistics services.(source: Wikipedia)&quot;@en ;<br>    rdfs:isDefinedBy plt:BuildingOntology ;<br>    rdfs:subClassOf plt:NonResidentialBuilding ;<br>    vs:term_status &quot;testing&quot; .</p>
+
+<p></p></code>
+				</div>
+
+			</div>
+
+
+			
+
+			<div class="entity-div">
+
+
+
+				<h3 class="entity-section">Class: <a name="plt:NonResidentialBuilding" href="#plt:NonResidentialBuilding">plt:NonResidentialBuilding</a>
+					<small>&nbsp;&nbsp;<a href="#a-z" class="backlink">back to top</a></small>
+				</h3>
+				<hr>
+
+
+                <div class="tree-container">
+                <div class="tree">
+                    <ul>
+                        
+
+                            <li href="#"><a>owl:Thing</a>
+
+                            <ul>
+                              <li><a style="font-weight: bold;">plt:NonResidentialBuilding</a>
+
+                              
+                                  <ul>
+                                    <li><a href="#plt:DataCenter">plt:DataCenter</a></li><li><a href="#plt:LogisticCenter">plt:LogisticCenter</a></li><li><a href="#plt:Retail">plt:Retail</a></li><li><a href="#plt:TranformerCenter">plt:TranformerCenter</a></li>
+                                  </ul>
+                              
+                                </li>
+
+                            </ul>
+
+                            </li>
+                        
+
+                    </ul>
+                </div>
+                </div>
+
+
+                
+
+				<p class="section-desc"><b>Description</b>
+                    <br>
+                    non-residential building means a building or part of a building that is not a place of residence.
+                </p>
+
+                
+                    <p class="section-desc"><b>Inherits from:</b> <br />owl:Thing</p>
+				
+
+
+
+				
+
+				
+
+
+                <small class="implementation_title">Implementation:</small>
+				<div class="implementation">
+					<code><p>@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .<br>@prefix plt: &lt;https://w3id.org/platoon/&gt; .<br>@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .<br>@prefix seas: &lt;https://w3id.org/seas/&gt; .<br>@prefix vs: &lt;http://www.w3.org/2003/06/sw-vocab-status/ns#&gt; .</p>
+
+<p>plt:NonResidentialBuilding a owl:Class ;<br>    rdfs:label &quot;Non Residential Building&quot;@en ;<br>    rdfs:comment &quot;non-residential building means a building or part of a building that is not a place of residence.&quot;@en ;<br>    rdfs:isDefinedBy plt:BuildingOntology ;<br>    owl:equivalentClass seas:NonResidentalBuilding ;<br>    vs:term_status &quot;testing&quot; .</p>
+
+<p></p></code>
+				</div>
+
+			</div>
+
+
+			
+
+			<div class="entity-div">
+
+
+
+				<h3 class="entity-section">Class: <a name="plt:OutdoorZone" href="#plt:OutdoorZone">plt:OutdoorZone</a>
+					<small>&nbsp;&nbsp;<a href="#a-z" class="backlink">back to top</a></small>
+				</h3>
+				<hr>
+
+
+                <div class="tree-container">
+                <div class="tree">
+                    <ul>
+                        
+                            <li> <a href="#seas:Zone">seas:Zone</a>
+
+                            <ul>
+
+                              <li><a style="font-weight: bold;">plt:OutdoorZone</a>
+
+                              
+                                </li>
+
+                            </ul>
+
+                            </li>
+                            
+
+                        
+
+                    </ul>
+                </div>
+                </div>
+
+
+                
+                <p class="section-desc">
+                    <small>NOTE</small> plt:OutdoorZone is a leaf node.</p>
+                
+
+				<p class="section-desc"><b>Description</b>
+                    <br>
+                    Open Air Zone
+                </p>
+
+                
+					<p class="section-desc"><b>Inherits from <small>(1)</small>:</b>
+                        <br />
+                        <a href="#seas:Zone">seas:Zone</a>  
+                    </p>
+				
+
+
+
+				
+
+				
+
+
+                <small class="implementation_title">Implementation:</small>
+				<div class="implementation">
+					<code><p>@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .<br>@prefix plt: &lt;https://w3id.org/platoon/&gt; .<br>@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .<br>@prefix seas: &lt;https://w3id.org/seas/&gt; .<br>@prefix vs: &lt;http://www.w3.org/2003/06/sw-vocab-status/ns#&gt; .</p>
+
+<p>plt:OutdoorZone a owl:Class ;<br>    rdfs:label &quot;Outdoor Zone&quot;@en ;<br>    rdfs:comment &quot;Open Air Zone&quot;@en ;<br>    rdfs:isDefinedBy plt:BuildingOntology ;<br>    rdfs:subClassOf seas:Zone ;<br>    vs:term_status &quot;testing&quot; .</p>
+
+<p></p></code>
+				</div>
+
+			</div>
+
+
+			
+
+			<div class="entity-div">
+
+
+
+				<h3 class="entity-section">Class: <a name="plt:ResidentialBuilding" href="#plt:ResidentialBuilding">plt:ResidentialBuilding</a>
+					<small>&nbsp;&nbsp;<a href="#a-z" class="backlink">back to top</a></small>
+				</h3>
+				<hr>
+
+
+                <div class="tree-container">
+                <div class="tree">
+                    <ul>
+                        
+
+                            <li href="#"><a>owl:Thing</a>
+
+                            <ul>
+                              <li><a style="font-weight: bold;">plt:ResidentialBuilding</a>
+
+                              
+                                </li>
+
+                            </ul>
+
+                            </li>
+                        
+
+                    </ul>
+                </div>
+                </div>
+
+
+                
+                <p class="section-desc">
+                    <small>NOTE</small> plt:ResidentialBuilding is a leaf node.</p>
+                
+
+				<p class="section-desc"><b>Description</b>
+                    <br>
+                    A residential building is a building containing separate residences where a person may live or regularly stay.
+                </p>
+
+                
+                    <p class="section-desc"><b>Inherits from:</b> <br />owl:Thing</p>
+				
+
+
+
+				
+
+				
+
+
+                <small class="implementation_title">Implementation:</small>
+				<div class="implementation">
+					<code><p>@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .<br>@prefix plt: &lt;https://w3id.org/platoon/&gt; .<br>@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .<br>@prefix seas: &lt;https://w3id.org/seas/&gt; .<br>@prefix vs: &lt;http://www.w3.org/2003/06/sw-vocab-status/ns#&gt; .</p>
+
+<p>plt:ResidentialBuilding a owl:Class ;<br>    rdfs:label &quot;Residential Building&quot;@en ;<br>    rdfs:comment &quot;A residential building is a building containing separate residences where a person may live or regularly stay.&quot;@en ;<br>    rdfs:isDefinedBy plt:BuildingOntology ;<br>    owl:equivalentClass seas:ResidentalBuilding ;<br>    vs:term_status &quot;testing&quot; .</p>
+
+<p></p></code>
+				</div>
+
+			</div>
+
+
+			
+
+			<div class="entity-div">
+
+
+
+				<h3 class="entity-section">Class: <a name="plt:Retail" href="#plt:Retail">plt:Retail</a>
+					<small>&nbsp;&nbsp;<a href="#a-z" class="backlink">back to top</a></small>
+				</h3>
+				<hr>
+
+
+                <div class="tree-container">
+                <div class="tree">
+                    <ul>
+                        
+                            <li> <a href="#plt:NonResidentialBuilding">plt:NonResidentialBuilding</a>
+
+                            <ul>
+
+                              <li><a style="font-weight: bold;">plt:Retail</a>
+
+                              
+                                </li>
+
+                            </ul>
+
+                            </li>
+                            
+
+                        
+
+                    </ul>
+                </div>
+                </div>
+
+
+                
+                <p class="section-desc">
+                    <small>NOTE</small> plt:Retail is a leaf node.</p>
+                
+
+				<p class="section-desc"><b>Description</b>
+                    <br>
+                    A retail is a building dedicated to the sale of goods to the public in relatively small quantities for use or consumption rather than for resale.(source: Wikipedia)
+                </p>
+
+                
+					<p class="section-desc"><b>Inherits from <small>(1)</small>:</b>
+                        <br />
+                        <a href="#plt:NonResidentialBuilding">plt:NonResidentialBuilding</a>  
+                    </p>
+				
+
+
+
+				
+
+				
+
+
+                <small class="implementation_title">Implementation:</small>
+				<div class="implementation">
+					<code><p>@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .<br>@prefix plt: &lt;https://w3id.org/platoon/&gt; .<br>@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .<br>@prefix vs: &lt;http://www.w3.org/2003/06/sw-vocab-status/ns#&gt; .</p>
+
+<p>plt:Retail a owl:Class ;<br>    rdfs:label &quot;Retail&quot;@en ;<br>    rdfs:comment &quot;A retail is a building dedicated to the sale of goods to the public in relatively small quantities for use or consumption rather than for resale.(source: Wikipedia)&quot;@en ;<br>    rdfs:isDefinedBy plt:BuildingOntology ;<br>    rdfs:subClassOf plt:NonResidentialBuilding ;<br>    vs:term_status &quot;testing&quot; .</p>
+
+<p></p></code>
+				</div>
+
+			</div>
+
+
+			
+
+			<div class="entity-div">
+
+
+
+				<h3 class="entity-section">Class: <a name="plt:TranformerCenter" href="#plt:TranformerCenter">plt:TranformerCenter</a>
+					<small>&nbsp;&nbsp;<a href="#a-z" class="backlink">back to top</a></small>
+				</h3>
+				<hr>
+
+
+                <div class="tree-container">
+                <div class="tree">
+                    <ul>
+                        
+                            <li> <a href="#plt:NonResidentialBuilding">plt:NonResidentialBuilding</a>
+
+                            <ul>
+
+                              <li><a style="font-weight: bold;">plt:TranformerCenter</a>
+
+                              
+                                </li>
+
+                            </ul>
+
+                            </li>
+                            
+
+                        
+
+                    </ul>
+                </div>
+                </div>
+
+
+                
+                <p class="section-desc">
+                    <small>NOTE</small> plt:TranformerCenter is a leaf node.</p>
+                
+
+				<p class="section-desc"><b>Description</b>
+                    <br>
+                    Building dedicated to transformer
+                </p>
+
+                
+					<p class="section-desc"><b>Inherits from <small>(1)</small>:</b>
+                        <br />
+                        <a href="#plt:NonResidentialBuilding">plt:NonResidentialBuilding</a>  
+                    </p>
+				
+
+
+
+				
+
+				
+
+
+                <small class="implementation_title">Implementation:</small>
+				<div class="implementation">
+					<code><p>@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .<br>@prefix plt: &lt;https://w3id.org/platoon/&gt; .<br>@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .<br>@prefix vs: &lt;http://www.w3.org/2003/06/sw-vocab-status/ns#&gt; .</p>
+
+<p>plt:TranformerCenter a owl:Class ;<br>    rdfs:label &quot;Transformer Center&quot;@en ;<br>    rdfs:comment &quot;Building dedicated to transformer&quot;@en ;<br>    rdfs:isDefinedBy plt:BuildingOntology ;<br>    rdfs:subClassOf plt:NonResidentialBuilding ;<br>    vs:term_status &quot;testing&quot; .</p>
+
+<p></p></code>
+				</div>
+
+			</div>
+
+
+			
+
+			<div class="entity-div">
+
+
+
+				<h3 class="entity-section">Class: <a name="s4bldg:Building" href="#s4bldg:Building">s4bldg:Building</a>
+					<small>&nbsp;&nbsp;<a href="#a-z" class="backlink">back to top</a></small>
+				</h3>
+				<hr>
+
+
+                <div class="tree-container">
+                <div class="tree">
+                    <ul>
+                        
+
+                            <li href="#"><a>owl:Thing</a>
+
+                            <ul>
+                              <li><a style="font-weight: bold;">s4bldg:Building</a>
+
+                              
+                                </li>
+
+                            </ul>
+
+                            </li>
+                        
+
+                    </ul>
+                </div>
+                </div>
+
+
+                
+                <p class="section-desc">
+                    <small>NOTE</small> s4bldg:Building is a leaf node.</p>
+                
+
+				<p class="section-desc"><b>Description</b>
+                    <br>
+                    
+                </p>
+
+                
+                    <p class="section-desc"><b>Inherits from:</b> <br />owl:Thing</p>
+				
+
+
+
+				
+
+				
+
+
+                <small class="implementation_title">Implementation:</small>
+				<div class="implementation">
+					<code><p>@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .<br>@prefix s4bldg: &lt;https://w3id.org/def/saref4bldg#&gt; .</p>
+
+<p>s4bldg:Building a owl:Class .</p>
+
+<p></p></code>
+				</div>
+
+			</div>
+
+
+			
+
+			<div class="entity-div">
+
+
+
+				<h3 class="entity-section">Class: <a name="sch:City" href="#sch:City">sch:City</a>
+					<small>&nbsp;&nbsp;<a href="#a-z" class="backlink">back to top</a></small>
+				</h3>
+				<hr>
+
+
+                <div class="tree-container">
+                <div class="tree">
+                    <ul>
+                        
+
+                            <li href="#"><a>owl:Thing</a>
+
+                            <ul>
+                              <li><a style="font-weight: bold;">sch:City</a>
+
+                              
+                                </li>
+
+                            </ul>
+
+                            </li>
+                        
+
+                    </ul>
+                </div>
+                </div>
+
+
+                
+                <p class="section-desc">
+                    <small>NOTE</small> sch:City is a leaf node.</p>
+                
+
+				<p class="section-desc"><b>Description</b>
+                    <br>
+                    
+                </p>
+
+                
+                    <p class="section-desc"><b>Inherits from:</b> <br />owl:Thing</p>
+				
+
+
+
+				
+
+				
+
+
+                <small class="implementation_title">Implementation:</small>
+				<div class="implementation">
+					<code><p>@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .<br>@prefix sch: &lt;https://schema.org/&gt; .</p>
+
+<p>sch:City a owl:Class .</p>
+
+<p></p></code>
+				</div>
+
+			</div>
+
+
+			
+
+			<div class="entity-div">
+
+
+
+				<h3 class="entity-section">Class: <a name="sch:Country" href="#sch:Country">sch:Country</a>
+					<small>&nbsp;&nbsp;<a href="#a-z" class="backlink">back to top</a></small>
+				</h3>
+				<hr>
+
+
+                <div class="tree-container">
+                <div class="tree">
+                    <ul>
+                        
+
+                            <li href="#"><a>owl:Thing</a>
+
+                            <ul>
+                              <li><a style="font-weight: bold;">sch:Country</a>
+
+                              
+                                </li>
+
+                            </ul>
+
+                            </li>
+                        
+
+                    </ul>
+                </div>
+                </div>
+
+
+                
+                <p class="section-desc">
+                    <small>NOTE</small> sch:Country is a leaf node.</p>
+                
+
+				<p class="section-desc"><b>Description</b>
+                    <br>
+                    
+                </p>
+
+                
+                    <p class="section-desc"><b>Inherits from:</b> <br />owl:Thing</p>
+				
+
+
+
+				
+
+				
+
+
+                <small class="implementation_title">Implementation:</small>
+				<div class="implementation">
+					<code><p>@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .<br>@prefix sch: &lt;https://schema.org/&gt; .</p>
+
+<p>sch:Country a owl:Class .</p>
+
+<p></p></code>
+				</div>
+
+			</div>
+
+
+			
+
+			<div class="entity-div">
+
+
+
+				<h3 class="entity-section">Class: <a name="sch:Place" href="#sch:Place">sch:Place</a>
+					<small>&nbsp;&nbsp;<a href="#a-z" class="backlink">back to top</a></small>
+				</h3>
+				<hr>
+
+
+                <div class="tree-container">
+                <div class="tree">
+                    <ul>
+                        
+
+                            <li href="#"><a>owl:Thing</a>
+
+                            <ul>
+                              <li><a style="font-weight: bold;">sch:Place</a>
+
+                              
+                                  <ul>
+                                    <li><a href="#plt:ClimateZone">plt:ClimateZone</a></li>
+                                  </ul>
+                              
+                                </li>
+
+                            </ul>
+
+                            </li>
+                        
+
+                    </ul>
+                </div>
+                </div>
+
+
+                
+
+				<p class="section-desc"><b>Description</b>
+                    <br>
+                    
+                </p>
+
+                
+                    <p class="section-desc"><b>Inherits from:</b> <br />owl:Thing</p>
+				
+
+
+
+				
+
+				
+
+
+                <small class="implementation_title">Implementation:</small>
+				<div class="implementation">
+					<code><p>@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .<br>@prefix sch: &lt;https://schema.org/&gt; .</p>
+
+<p>sch:Place a owl:Class .</p>
+
+<p></p></code>
+				</div>
+
+			</div>
+
+
+			
+
+			<div class="entity-div">
+
+
+
+				<h3 class="entity-section">Class: <a name="seas:AreaProperty" href="#seas:AreaProperty">seas:AreaProperty</a>
+					<small>&nbsp;&nbsp;<a href="#a-z" class="backlink">back to top</a></small>
+				</h3>
+				<hr>
+
+
+                <div class="tree-container">
+                <div class="tree">
+                    <ul>
+                        
+
+                            <li href="#"><a>owl:Thing</a>
+
+                            <ul>
+                              <li><a style="font-weight: bold;">seas:AreaProperty</a>
+
+                              
+                                </li>
+
+                            </ul>
+
+                            </li>
+                        
+
+                    </ul>
+                </div>
+                </div>
+
+
+                
+                <p class="section-desc">
+                    <small>NOTE</small> seas:AreaProperty is a leaf node.</p>
+                
+
+				<p class="section-desc"><b>Description</b>
+                    <br>
+                    
+                </p>
+
+                
+                    <p class="section-desc"><b>Inherits from:</b> <br />owl:Thing</p>
+				
+
+
+
+				
+
+				
+
+
+                <small class="implementation_title">Implementation:</small>
+				<div class="implementation">
+					<code><p>@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .<br>@prefix seas: &lt;https://w3id.org/seas/&gt; .</p>
+
+<p>seas:AreaProperty a owl:Class .</p>
+
+<p></p></code>
+				</div>
+
+			</div>
+
+
+			
+
+			<div class="entity-div">
+
+
+
+				<h3 class="entity-section">Class: <a name="seas:Building" href="#seas:Building">seas:Building</a>
+					<small>&nbsp;&nbsp;<a href="#a-z" class="backlink">back to top</a></small>
+				</h3>
+				<hr>
+
+
+                <div class="tree-container">
+                <div class="tree">
+                    <ul>
+                        
+
+                            <li href="#"><a>owl:Thing</a>
+
+                            <ul>
+                              <li><a style="font-weight: bold;">seas:Building</a>
+
+                              
+                                </li>
+
+                            </ul>
+
+                            </li>
+                        
+
+                    </ul>
+                </div>
+                </div>
+
+
+                
+                <p class="section-desc">
+                    <small>NOTE</small> seas:Building is a leaf node.</p>
+                
+
+				<p class="section-desc"><b>Description</b>
+                    <br>
+                    
+                </p>
+
+                
+                    <p class="section-desc"><b>Inherits from:</b> <br />owl:Thing</p>
+				
+
+
+
+				
+
+				
+
+
+                <small class="implementation_title">Implementation:</small>
+				<div class="implementation">
+					<code><p>@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .<br>@prefix seas: &lt;https://w3id.org/seas/&gt; .</p>
+
+<p>seas:Building a owl:Class .</p>
+
+<p></p></code>
+				</div>
+
+			</div>
+
+
+			
+
+			<div class="entity-div">
+
+
+
+				<h3 class="entity-section">Class: <a name="seas:BuildingSpace" href="#seas:BuildingSpace">seas:BuildingSpace</a>
+					<small>&nbsp;&nbsp;<a href="#a-z" class="backlink">back to top</a></small>
+				</h3>
+				<hr>
+
+
+                <div class="tree-container">
+                <div class="tree">
+                    <ul>
+                        
+
+                            <li href="#"><a>owl:Thing</a>
+
+                            <ul>
+                              <li><a style="font-weight: bold;">seas:BuildingSpace</a>
+
+                              
+                                  <ul>
+                                    <li><a href="#plt:Canteen">plt:Canteen</a></li>
+                                  </ul>
+                              
+                                </li>
+
+                            </ul>
+
+                            </li>
+                        
+
+                    </ul>
+                </div>
+                </div>
+
+
+                
+
+				<p class="section-desc"><b>Description</b>
+                    <br>
+                    
+                </p>
+
+                
+                    <p class="section-desc"><b>Inherits from:</b> <br />owl:Thing</p>
+				
+
+
+
+				
+
+				
+
+
+                <small class="implementation_title">Implementation:</small>
+				<div class="implementation">
+					<code><p>None</p></code>
+				</div>
+
+			</div>
+
+
+			
+
+			<div class="entity-div">
+
+
+
+				<h3 class="entity-section">Class: <a name="seas:BuildingStorey" href="#seas:BuildingStorey">seas:BuildingStorey</a>
+					<small>&nbsp;&nbsp;<a href="#a-z" class="backlink">back to top</a></small>
+				</h3>
+				<hr>
+
+
+                <div class="tree-container">
+                <div class="tree">
+                    <ul>
+                        
+
+                            <li href="#"><a>owl:Thing</a>
+
+                            <ul>
+                              <li><a style="font-weight: bold;">seas:BuildingStorey</a>
+
+                              
+                                </li>
+
+                            </ul>
+
+                            </li>
+                        
+
+                    </ul>
+                </div>
+                </div>
+
+
+                
+                <p class="section-desc">
+                    <small>NOTE</small> seas:BuildingStorey is a leaf node.</p>
+                
+
+				<p class="section-desc"><b>Description</b>
+                    <br>
+                    
+                </p>
+
+                
+                    <p class="section-desc"><b>Inherits from:</b> <br />owl:Thing</p>
+				
+
+
+
+				
+
+				
+
+
+                <small class="implementation_title">Implementation:</small>
+				<div class="implementation">
+					<code><p>@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .<br>@prefix seas: &lt;https://w3id.org/seas/&gt; .</p>
+
+<p>seas:BuildingStorey a owl:Class .</p>
+
+<p></p></code>
+				</div>
+
+			</div>
+
+
+			
+
+			<div class="entity-div">
+
+
+
+				<h3 class="entity-section">Class: <a name="seas:Construction" href="#seas:Construction">seas:Construction</a>
+					<small>&nbsp;&nbsp;<a href="#a-z" class="backlink">back to top</a></small>
+				</h3>
+				<hr>
+
+
+                <div class="tree-container">
+                <div class="tree">
+                    <ul>
+                        
+
+                            <li href="#"><a>owl:Thing</a>
+
+                            <ul>
+                              <li><a style="font-weight: bold;">seas:Construction</a>
+
+                              
+                                </li>
+
+                            </ul>
+
+                            </li>
+                        
+
+                    </ul>
+                </div>
+                </div>
+
+
+                
+                <p class="section-desc">
+                    <small>NOTE</small> seas:Construction is a leaf node.</p>
+                
+
+				<p class="section-desc"><b>Description</b>
+                    <br>
+                    
+                </p>
+
+                
+                    <p class="section-desc"><b>Inherits from:</b> <br />owl:Thing</p>
+				
+
+
+
+				
+
+				
+
+
+                <small class="implementation_title">Implementation:</small>
+				<div class="implementation">
+					<code><p>None</p></code>
+				</div>
+
+			</div>
+
+
+			
+
+			<div class="entity-div">
+
+
+
+				<h3 class="entity-section">Class: <a name="seas:Corridor" href="#seas:Corridor">seas:Corridor</a>
+					<small>&nbsp;&nbsp;<a href="#a-z" class="backlink">back to top</a></small>
+				</h3>
+				<hr>
+
+
+                <div class="tree-container">
+                <div class="tree">
+                    <ul>
+                        
+
+                            <li href="#"><a>owl:Thing</a>
+
+                            <ul>
+                              <li><a style="font-weight: bold;">seas:Corridor</a>
+
+                              
+                                </li>
+
+                            </ul>
+
+                            </li>
+                        
+
+                    </ul>
+                </div>
+                </div>
+
+
+                
+                <p class="section-desc">
+                    <small>NOTE</small> seas:Corridor is a leaf node.</p>
+                
+
+				<p class="section-desc"><b>Description</b>
+                    <br>
+                    
+                </p>
+
+                
+                    <p class="section-desc"><b>Inherits from:</b> <br />owl:Thing</p>
+				
+
+
+
+				
+
+				
+
+
+                <small class="implementation_title">Implementation:</small>
+				<div class="implementation">
+					<code><p>@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .<br>@prefix seas: &lt;https://w3id.org/seas/&gt; .</p>
+
+<p>seas:Corridor a owl:Class .</p>
+
+<p></p></code>
+				</div>
+
+			</div>
+
+
+			
+
+			<div class="entity-div">
+
+
+
+				<h3 class="entity-section">Class: <a name="seas:EducationalBuilding" href="#seas:EducationalBuilding">seas:EducationalBuilding</a>
+					<small>&nbsp;&nbsp;<a href="#a-z" class="backlink">back to top</a></small>
+				</h3>
+				<hr>
+
+
+                <div class="tree-container">
+                <div class="tree">
+                    <ul>
+                        
+
+                            <li href="#"><a>owl:Thing</a>
+
+                            <ul>
+                              <li><a style="font-weight: bold;">seas:EducationalBuilding</a>
+
+                              
+                                </li>
+
+                            </ul>
+
+                            </li>
+                        
+
+                    </ul>
+                </div>
+                </div>
+
+
+                
+                <p class="section-desc">
+                    <small>NOTE</small> seas:EducationalBuilding is a leaf node.</p>
+                
+
+				<p class="section-desc"><b>Description</b>
+                    <br>
+                    
+                </p>
+
+                
+                    <p class="section-desc"><b>Inherits from:</b> <br />owl:Thing</p>
+				
+
+
+
+				
+
+				
+
+
+                <small class="implementation_title">Implementation:</small>
+				<div class="implementation">
+					<code><p>@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .<br>@prefix seas: &lt;https://w3id.org/seas/&gt; .</p>
+
+<p>seas:EducationalBuilding a owl:Class .</p>
+
+<p></p></code>
+				</div>
+
+			</div>
+
+
+			
+
+			<div class="entity-div">
+
+
+
+				<h3 class="entity-section">Class: <a name="seas:FeatureOfInterest" href="#seas:FeatureOfInterest">seas:FeatureOfInterest</a>
+					<small>&nbsp;&nbsp;<a href="#a-z" class="backlink">back to top</a></small>
+				</h3>
+				<hr>
+
+
+                <div class="tree-container">
+                <div class="tree">
+                    <ul>
+                        
+
+                            <li href="#"><a>owl:Thing</a>
+
+                            <ul>
+                              <li><a style="font-weight: bold;">seas:FeatureOfInterest</a>
+
+                              
+                                </li>
+
+                            </ul>
+
+                            </li>
+                        
+
+                    </ul>
+                </div>
+                </div>
+
+
+                
+                <p class="section-desc">
+                    <small>NOTE</small> seas:FeatureOfInterest is a leaf node.</p>
+                
+
+				<p class="section-desc"><b>Description</b>
+                    <br>
+                    
+                </p>
+
+                
+                    <p class="section-desc"><b>Inherits from:</b> <br />owl:Thing</p>
+				
+
+
+
+				
+
+				
+
+
+                <small class="implementation_title">Implementation:</small>
+				<div class="implementation">
+					<code><p>None</p></code>
+				</div>
+
+			</div>
+
+
+			
+
+			<div class="entity-div">
+
+
+
+				<h3 class="entity-section">Class: <a name="seas:Lobby" href="#seas:Lobby">seas:Lobby</a>
+					<small>&nbsp;&nbsp;<a href="#a-z" class="backlink">back to top</a></small>
+				</h3>
+				<hr>
+
+
+                <div class="tree-container">
+                <div class="tree">
+                    <ul>
+                        
+
+                            <li href="#"><a>owl:Thing</a>
+
+                            <ul>
+                              <li><a style="font-weight: bold;">seas:Lobby</a>
+
+                              
+                                </li>
+
+                            </ul>
+
+                            </li>
+                        
+
+                    </ul>
+                </div>
+                </div>
+
+
+                
+                <p class="section-desc">
+                    <small>NOTE</small> seas:Lobby is a leaf node.</p>
+                
+
+				<p class="section-desc"><b>Description</b>
+                    <br>
+                    
+                </p>
+
+                
+                    <p class="section-desc"><b>Inherits from:</b> <br />owl:Thing</p>
+				
+
+
+
+				
+
+				
+
+
+                <small class="implementation_title">Implementation:</small>
+				<div class="implementation">
+					<code><p>@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .<br>@prefix seas: &lt;https://w3id.org/seas/&gt; .</p>
+
+<p>seas:Lobby a owl:Class .</p>
+
+<p></p></code>
+				</div>
+
+			</div>
+
+
+			
+
+			<div class="entity-div">
+
+
+
+				<h3 class="entity-section">Class: <a name="seas:NonResidentalBuilding" href="#seas:NonResidentalBuilding">seas:NonResidentalBuilding</a>
+					<small>&nbsp;&nbsp;<a href="#a-z" class="backlink">back to top</a></small>
+				</h3>
+				<hr>
+
+
+                <div class="tree-container">
+                <div class="tree">
+                    <ul>
+                        
+
+                            <li href="#"><a>owl:Thing</a>
+
+                            <ul>
+                              <li><a style="font-weight: bold;">seas:NonResidentalBuilding</a>
+
+                              
+                                </li>
+
+                            </ul>
+
+                            </li>
+                        
+
+                    </ul>
+                </div>
+                </div>
+
+
+                
+                <p class="section-desc">
+                    <small>NOTE</small> seas:NonResidentalBuilding is a leaf node.</p>
+                
+
+				<p class="section-desc"><b>Description</b>
+                    <br>
+                    
+                </p>
+
+                
+                    <p class="section-desc"><b>Inherits from:</b> <br />owl:Thing</p>
+				
+
+
+
+				
+
+				
+
+
+                <small class="implementation_title">Implementation:</small>
+				<div class="implementation">
+					<code><p>@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .<br>@prefix seas: &lt;https://w3id.org/seas/&gt; .</p>
+
+<p>seas:NonResidentalBuilding a owl:Class .</p>
+
+<p></p></code>
+				</div>
+
+			</div>
+
+
+			
+
+			<div class="entity-div">
+
+
+
+				<h3 class="entity-section">Class: <a name="seas:OfficeBuilding" href="#seas:OfficeBuilding">seas:OfficeBuilding</a>
+					<small>&nbsp;&nbsp;<a href="#a-z" class="backlink">back to top</a></small>
+				</h3>
+				<hr>
+
+
+                <div class="tree-container">
+                <div class="tree">
+                    <ul>
+                        
+
+                            <li href="#"><a>owl:Thing</a>
+
+                            <ul>
+                              <li><a style="font-weight: bold;">seas:OfficeBuilding</a>
+
+                              
+                                </li>
+
+                            </ul>
+
+                            </li>
+                        
+
+                    </ul>
+                </div>
+                </div>
+
+
+                
+                <p class="section-desc">
+                    <small>NOTE</small> seas:OfficeBuilding is a leaf node.</p>
+                
+
+				<p class="section-desc"><b>Description</b>
+                    <br>
+                    
+                </p>
+
+                
+                    <p class="section-desc"><b>Inherits from:</b> <br />owl:Thing</p>
+				
+
+
+
+				
+
+				
+
+
+                <small class="implementation_title">Implementation:</small>
+				<div class="implementation">
+					<code><p>@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .<br>@prefix seas: &lt;https://w3id.org/seas/&gt; .</p>
+
+<p>seas:OfficeBuilding a owl:Class .</p>
+
+<p></p></code>
+				</div>
+
+			</div>
+
+
+			
+
+			<div class="entity-div">
+
+
+
+				<h3 class="entity-section">Class: <a name="seas:ResidentalBuilding" href="#seas:ResidentalBuilding">seas:ResidentalBuilding</a>
+					<small>&nbsp;&nbsp;<a href="#a-z" class="backlink">back to top</a></small>
+				</h3>
+				<hr>
+
+
+                <div class="tree-container">
+                <div class="tree">
+                    <ul>
+                        
+
+                            <li href="#"><a>owl:Thing</a>
+
+                            <ul>
+                              <li><a style="font-weight: bold;">seas:ResidentalBuilding</a>
+
+                              
+                                </li>
+
+                            </ul>
+
+                            </li>
+                        
+
+                    </ul>
+                </div>
+                </div>
+
+
+                
+                <p class="section-desc">
+                    <small>NOTE</small> seas:ResidentalBuilding is a leaf node.</p>
+                
+
+				<p class="section-desc"><b>Description</b>
+                    <br>
+                    
+                </p>
+
+                
+                    <p class="section-desc"><b>Inherits from:</b> <br />owl:Thing</p>
+				
+
+
+
+				
+
+				
+
+
+                <small class="implementation_title">Implementation:</small>
+				<div class="implementation">
+					<code><p>@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .<br>@prefix seas: &lt;https://w3id.org/seas/&gt; .</p>
+
+<p>seas:ResidentalBuilding a owl:Class .</p>
+
+<p></p></code>
+				</div>
+
+			</div>
+
+
+			
+
+			<div class="entity-div">
+
+
+
+				<h3 class="entity-section">Class: <a name="seas:System" href="#seas:System">seas:System</a>
+					<small>&nbsp;&nbsp;<a href="#a-z" class="backlink">back to top</a></small>
+				</h3>
+				<hr>
+
+
+                <div class="tree-container">
+                <div class="tree">
+                    <ul>
+                        
+
+                            <li href="#"><a>owl:Thing</a>
+
+                            <ul>
+                              <li><a style="font-weight: bold;">seas:System</a>
+
+                              
+                                </li>
+
+                            </ul>
+
+                            </li>
+                        
+
+                    </ul>
+                </div>
+                </div>
+
+
+                
+                <p class="section-desc">
+                    <small>NOTE</small> seas:System is a leaf node.</p>
+                
+
+				<p class="section-desc"><b>Description</b>
+                    <br>
+                    
+                </p>
+
+                
+                    <p class="section-desc"><b>Inherits from:</b> <br />owl:Thing</p>
+				
+
+
+
+				
+
+				
+
+
+                <small class="implementation_title">Implementation:</small>
+				<div class="implementation">
+					<code><p>@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .<br>@prefix seas: &lt;https://w3id.org/seas/&gt; .</p>
+
+<p>seas:System a owl:Class .</p>
+
+<p></p></code>
+				</div>
+
+			</div>
+
+
+			
+
+			<div class="entity-div">
+
+
+
+				<h3 class="entity-section">Class: <a name="seas:Wall" href="#seas:Wall">seas:Wall</a>
+					<small>&nbsp;&nbsp;<a href="#a-z" class="backlink">back to top</a></small>
+				</h3>
+				<hr>
+
+
+                <div class="tree-container">
+                <div class="tree">
+                    <ul>
+                        
+
+                            <li href="#"><a>owl:Thing</a>
+
+                            <ul>
+                              <li><a style="font-weight: bold;">seas:Wall</a>
+
+                              
+                                </li>
+
+                            </ul>
+
+                            </li>
+                        
+
+                    </ul>
+                </div>
+                </div>
+
+
+                
+                <p class="section-desc">
+                    <small>NOTE</small> seas:Wall is a leaf node.</p>
+                
+
+				<p class="section-desc"><b>Description</b>
+                    <br>
+                    
+                </p>
+
+                
+                    <p class="section-desc"><b>Inherits from:</b> <br />owl:Thing</p>
+				
+
+
+
+				
+
+				
+
+
+                <small class="implementation_title">Implementation:</small>
+				<div class="implementation">
+					<code><p>@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .<br>@prefix seas: &lt;https://w3id.org/seas/&gt; .</p>
+
+<p>seas:Wall a owl:Class .</p>
+
+<p></p></code>
+				</div>
+
+			</div>
+
+
+			
+
+			<div class="entity-div">
+
+
+
+				<h3 class="entity-section">Class: <a name="seas:Zone" href="#seas:Zone">seas:Zone</a>
+					<small>&nbsp;&nbsp;<a href="#a-z" class="backlink">back to top</a></small>
+				</h3>
+				<hr>
+
+
+                <div class="tree-container">
+                <div class="tree">
+                    <ul>
+                        
+
+                            <li href="#"><a>owl:Thing</a>
+
+                            <ul>
+                              <li><a style="font-weight: bold;">seas:Zone</a>
+
+                              
+                                  <ul>
+                                    <li><a href="#plt:IndoorZone">plt:IndoorZone</a></li><li><a href="#plt:OutdoorZone">plt:OutdoorZone</a></li>
+                                  </ul>
+                              
+                                </li>
+
+                            </ul>
+
+                            </li>
+                        
+
+                    </ul>
+                </div>
+                </div>
+
+
+                
+
+				<p class="section-desc"><b>Description</b>
+                    <br>
+                    
+                </p>
+
+                
+                    <p class="section-desc"><b>Inherits from:</b> <br />owl:Thing</p>
+				
+
+
+
+				
+
+				
+
+
+                <small class="implementation_title">Implementation:</small>
+				<div class="implementation">
+					<code><p>@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .<br>@prefix seas: &lt;https://w3id.org/seas/&gt; .</p>
+
+<p>seas:Zone a owl:Class .</p>
+
+<p></p></code>
+				</div>
+
+			</div>
+
+
+			
+
+			<div class="entity-div">
+
+
+
+				<h3 class="entity-section">Class: <a name="voaf:Vocabulary" href="#voaf:Vocabulary">voaf:Vocabulary</a>
+					<small>&nbsp;&nbsp;<a href="#a-z" class="backlink">back to top</a></small>
+				</h3>
+				<hr>
+
+
+                <div class="tree-container">
+                <div class="tree">
+                    <ul>
+                        
+
+                            <li href="#"><a>owl:Thing</a>
+
+                            <ul>
+                              <li><a style="font-weight: bold;">voaf:Vocabulary</a>
+
+                              
+                                </li>
+
+                            </ul>
+
+                            </li>
+                        
+
+                    </ul>
+                </div>
+                </div>
+
+
+                
+                <p class="section-desc">
+                    <small>NOTE</small> voaf:Vocabulary is a leaf node.</p>
+                
+
+				<p class="section-desc"><b>Description</b>
+                    <br>
+                    
+                </p>
+
+                
+                    <p class="section-desc"><b>Inherits from:</b> <br />owl:Thing</p>
+				
+
+
+
+				
+
+				
+
+
+                <small class="implementation_title">Implementation:</small>
+				<div class="implementation">
+					<code><p>@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .<br>@prefix voaf: &lt;http://purl.org/vocommons/voaf#&gt; .</p>
+
+<p>voaf:Vocabulary a owl:Class .</p>
+
+<p></p></code>
+				</div>
+
+			</div>
+
+
+			
+
+	
+
+
+
+	
+
+	
+
+		<hr class="margintop">
+		<h1 class="margintop"><a name="objproperties">&nbsp;</a>Object Properties</h1>
+
+			
+
+			<div class="entity-div">
+
+				<h3 class="entity-section">Object Property: <a name="gsp:hasGeometry" href="#gsp:hasGeometry">gsp:hasGeometry</a>
+					<small>&nbsp;&nbsp;<a href="#a-z" class="backlink">back to top</a></small>
+				</h3>
+				<hr>
+
+                
+                <p class="section-desc">
+                    <small>NOTE</small> gsp:hasGeometry is a leaf node.</p>
+                
+
+				<p class="section-desc"><b>Description</b>
+                    <br>
+                    
+                </p>
+
+                
+
+				
+
+
+
+				
+
+				
+
+				
+
+				
+
+
+                <small class="implementation_title">Implementation:</small>
+				<div class="implementation">
+					<code><p>@prefix gsp: &lt;http://www.opengis.net/ont/geosparql#&gt; .<br>@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .</p>
+
+<p>gsp:hasGeometry a owl:ObjectProperty .</p>
+
+<p></p></code>
+				</div>
+
+			</div>
+
+			
+
+			<div class="entity-div">
+
+				<h3 class="entity-section">Object Property: <a name="sch:containedInPlace" href="#sch:containedInPlace">sch:containedInPlace</a>
+					<small>&nbsp;&nbsp;<a href="#a-z" class="backlink">back to top</a></small>
+				</h3>
+				<hr>
+
+                
+                <p class="section-desc">
+                    <small>NOTE</small> sch:containedInPlace is a leaf node.</p>
+                
+
+				<p class="section-desc"><b>Description</b>
+                    <br>
+                    
+                </p>
+
+                
+
+				
+
+
+
+				
+
+				
+
+				
+
+				
+
+
+                <small class="implementation_title">Implementation:</small>
+				<div class="implementation">
+					<code><p>@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .<br>@prefix sch: &lt;https://schema.org/&gt; .</p>
+
+<p>sch:containedInPlace a owl:ObjectProperty .</p>
+
+<p></p></code>
+				</div>
+
+			</div>
+
+			
+
+			<div class="entity-div">
+
+				<h3 class="entity-section">Object Property: <a name="sch:containsPlace" href="#sch:containsPlace">sch:containsPlace</a>
+					<small>&nbsp;&nbsp;<a href="#a-z" class="backlink">back to top</a></small>
+				</h3>
+				<hr>
+
+                
+                <p class="section-desc">
+                    <small>NOTE</small> sch:containsPlace is a leaf node.</p>
+                
+
+				<p class="section-desc"><b>Description</b>
+                    <br>
+                    
+                </p>
+
+                
+
+				
+
+
+
+				
+
+				
+
+				
+
+				
+
+
+                <small class="implementation_title">Implementation:</small>
+				<div class="implementation">
+					<code><p>@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .<br>@prefix sch: &lt;https://schema.org/&gt; .</p>
+
+<p>sch:containsPlace a owl:ObjectProperty .</p>
+
+<p></p></code>
+				</div>
+
+			</div>
+
+			
+
+			<div class="entity-div">
+
+				<h3 class="entity-section">Object Property: <a name="bot:containsZone" href="#bot:containsZone">bot:containsZone</a>
+					<small>&nbsp;&nbsp;<a href="#a-z" class="backlink">back to top</a></small>
+				</h3>
+				<hr>
+
+                
+                <p class="section-desc">
+                    <small>NOTE</small> bot:containsZone is a leaf node.</p>
+                
+
+				<p class="section-desc"><b>Description</b>
+                    <br>
+                    
+                </p>
+
+                
+
+				
+
+
+
+				
+
+				
+
+				
+
+				
+
+
+                <small class="implementation_title">Implementation:</small>
+				<div class="implementation">
+					<code><p>@prefix bot: &lt;https://w3id.org/bot#&gt; .<br>@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .</p>
+
+<p>bot:containsZone a owl:ObjectProperty .</p>
+
+<p></p></code>
+				</div>
+
+			</div>
+
+			
+
+			<div class="entity-div">
+
+				<h3 class="entity-section">Object Property: <a name="bot:hasStorey" href="#bot:hasStorey">bot:hasStorey</a>
+					<small>&nbsp;&nbsp;<a href="#a-z" class="backlink">back to top</a></small>
+				</h3>
+				<hr>
+
+                
+                <p class="section-desc">
+                    <small>NOTE</small> bot:hasStorey is a leaf node.</p>
+                
+
+				<p class="section-desc"><b>Description</b>
+                    <br>
+                    
+                </p>
+
+                
+
+				
+
+
+
+				
+
+				
+
+				
+
+				
+
+
+                <small class="implementation_title">Implementation:</small>
+				<div class="implementation">
+					<code><p>@prefix bot: &lt;https://w3id.org/bot#&gt; .<br>@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .</p>
+
+<p>bot:hasStorey a owl:ObjectProperty .</p>
+
+<p></p></code>
+				</div>
+
+			</div>
+
+			
+
+			<div class="entity-div">
+
+				<h3 class="entity-section">Object Property: <a name="s4bldg:contains" href="#s4bldg:contains">s4bldg:contains</a>
+					<small>&nbsp;&nbsp;<a href="#a-z" class="backlink">back to top</a></small>
+				</h3>
+				<hr>
+
+                
+                <p class="section-desc">
+                    <small>NOTE</small> s4bldg:contains is a leaf node.</p>
+                
+
+				<p class="section-desc"><b>Description</b>
+                    <br>
+                    
+                </p>
+
+                
+
+				
+
+
+
+				
+
+				
+
+				
+
+				
+
+
+                <small class="implementation_title">Implementation:</small>
+				<div class="implementation">
+					<code><p>@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .<br>@prefix s4bldg: &lt;https://w3id.org/def/saref4bldg#&gt; .</p>
+
+<p>s4bldg:contains a owl:ObjectProperty .</p>
+
+<p></p></code>
+				</div>
+
+			</div>
+
+			
+
+			<div class="entity-div">
+
+				<h3 class="entity-section">Object Property: <a name="s4bldg:isContainedIn" href="#s4bldg:isContainedIn">s4bldg:isContainedIn</a>
+					<small>&nbsp;&nbsp;<a href="#a-z" class="backlink">back to top</a></small>
+				</h3>
+				<hr>
+
+                
+                <p class="section-desc">
+                    <small>NOTE</small> s4bldg:isContainedIn is a leaf node.</p>
+                
+
+				<p class="section-desc"><b>Description</b>
+                    <br>
+                    
+                </p>
+
+                
+
+				
+
+
+
+				
+
+				
+
+				
+
+				
+
+
+                <small class="implementation_title">Implementation:</small>
+				<div class="implementation">
+					<code><p>@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .<br>@prefix s4bldg: &lt;https://w3id.org/def/saref4bldg#&gt; .</p>
+
+<p>s4bldg:isContainedIn a owl:ObjectProperty .</p>
+
+<p></p></code>
+				</div>
+
+			</div>
+
+			
+
+			<div class="entity-div">
+
+				<h3 class="entity-section">Object Property: <a name="seas:isMemberOf" href="#seas:isMemberOf">seas:isMemberOf</a>
+					<small>&nbsp;&nbsp;<a href="#a-z" class="backlink">back to top</a></small>
+				</h3>
+				<hr>
+
+                
+                <p class="section-desc">
+                    <small>NOTE</small> seas:isMemberOf is a leaf node.</p>
+                
+
+				<p class="section-desc"><b>Description</b>
+                    <br>
+                    
+                </p>
+
+                
+
+				
+
+
+
+				
+
+				
+
+				
+
+				
+
+
+                <small class="implementation_title">Implementation:</small>
+				<div class="implementation">
+					<code><p>@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .<br>@prefix seas: &lt;https://w3id.org/seas/&gt; .</p>
+
+<p>seas:isMemberOf a owl:ObjectProperty .</p>
+
+<p></p></code>
+				</div>
+
+			</div>
+
+			
+
+			<div class="entity-div">
+
+				<h3 class="entity-section">Object Property: <a name="seas:subSystemOf" href="#seas:subSystemOf">seas:subSystemOf</a>
+					<small>&nbsp;&nbsp;<a href="#a-z" class="backlink">back to top</a></small>
+				</h3>
+				<hr>
+
+                
+                <p class="section-desc">
+                    <small>NOTE</small> seas:subSystemOf is a leaf node.</p>
+                
+
+				<p class="section-desc"><b>Description</b>
+                    <br>
+                    
+                </p>
+
+                
+
+				
+
+
+
+				
+
+				
+
+				
+
+				
+
+
+                <small class="implementation_title">Implementation:</small>
+				<div class="implementation">
+					<code><p>@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .<br>@prefix seas: &lt;https://w3id.org/seas/&gt; .</p>
+
+<p>seas:subSystemOf a owl:ObjectProperty .</p>
+
+<p></p></code>
+				</div>
+
+			</div>
+
+			
+
+	
+
+
+
+
+
+
+
+	
+
+	
+
+		<hr class="margintop">
+		<h1 class="margintop"><a name="dataproperties">&nbsp;</a>Datatype Properties</h1>
+
+			
+
+			<div class="entity-div">
+
+				<h3 class="entity-section">Datatype Property: <a name="foaf:name" href="#foaf:name">foaf:name</a>
+					<small>&nbsp;&nbsp;<a href="#a-z" class="backlink">back to top</a></small>
+				</h3>
+				<hr>
+
+                
+                <p class="section-desc">
+                    <small>NOTE</small> foaf:name is a leaf node.</p>
+                
+
+				<p class="section-desc"><b>Description</b>
+                    <br>
+                    
+                </p>
+
+                
+
+				
+
+
+
+				
+
+				
+
+				
+
+				
+
+
+                <small class="implementation_title">Implementation:</small>
+				<div class="implementation">
+					<code><p>@prefix foaf: &lt;http://xmlns.com/foaf/0.1/&gt; .<br>@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .</p>
+
+<p>foaf:name a owl:DatatypeProperty .</p>
+
+<p></p></code>
+				</div>
+
+
+			</div>
+			
+
+	
+
+
+
+
+
+
+
+	
+
+	
+
+		<hr class="margintop">
+		<h1 class="margintop"><a name="annotationproperties">&nbsp;</a>Annotation Properties</h1>
+
+			
+
+			<div class="entity-div">
+
+				<h3 class="entity-section">Annotation Property: <a name="dcterms:contributor" href="#dcterms:contributor">dcterms:contributor</a>
+					<small>&nbsp;&nbsp;<a href="#a-z" class="backlink">back to top</a></small>
+				</h3>
+				<hr>
+
+                
+                <p class="section-desc">
+                    <small>NOTE</small> dcterms:contributor is a leaf node.</p>
+                
+
+				<p class="section-desc"><b>Description</b>
+                    <br>
+                    
+                </p>
+
+                
+
+				
+
+
+
+				
+
+				
+
+				
+
+				
+
+
+                <small class="implementation_title">Implementation:</small>
+				<div class="implementation">
+					<code><p>@prefix dcterms: &lt;http://purl.org/dc/terms/&gt; .<br>@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .</p>
+
+<p>dcterms:contributor a owl:AnnotationProperty .</p>
+
+<p></p></code>
+				</div>
+
+
+			</div>
+			
+
+			<div class="entity-div">
+
+				<h3 class="entity-section">Annotation Property: <a name="dcterms:creator" href="#dcterms:creator">dcterms:creator</a>
+					<small>&nbsp;&nbsp;<a href="#a-z" class="backlink">back to top</a></small>
+				</h3>
+				<hr>
+
+                
+                <p class="section-desc">
+                    <small>NOTE</small> dcterms:creator is a leaf node.</p>
+                
+
+				<p class="section-desc"><b>Description</b>
+                    <br>
+                    
+                </p>
+
+                
+
+				
+
+
+
+				
+
+				
+
+				
+
+				
+
+
+                <small class="implementation_title">Implementation:</small>
+				<div class="implementation">
+					<code><p>@prefix dcterms: &lt;http://purl.org/dc/terms/&gt; .<br>@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .</p>
+
+<p>dcterms:creator a owl:AnnotationProperty .</p>
+
+<p></p></code>
+				</div>
+
+
+			</div>
+			
+
+			<div class="entity-div">
+
+				<h3 class="entity-section">Annotation Property: <a name="dcterms:description" href="#dcterms:description">dcterms:description</a>
+					<small>&nbsp;&nbsp;<a href="#a-z" class="backlink">back to top</a></small>
+				</h3>
+				<hr>
+
+                
+                <p class="section-desc">
+                    <small>NOTE</small> dcterms:description is a leaf node.</p>
+                
+
+				<p class="section-desc"><b>Description</b>
+                    <br>
+                    
+                </p>
+
+                
+
+				
+
+
+
+				
+
+				
+
+				
+
+				
+
+
+                <small class="implementation_title">Implementation:</small>
+				<div class="implementation">
+					<code><p>@prefix dcterms: &lt;http://purl.org/dc/terms/&gt; .<br>@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .</p>
+
+<p>dcterms:description a owl:AnnotationProperty .</p>
+
+<p></p></code>
+				</div>
+
+
+			</div>
+			
+
+			<div class="entity-div">
+
+				<h3 class="entity-section">Annotation Property: <a name="dcterms:issued" href="#dcterms:issued">dcterms:issued</a>
+					<small>&nbsp;&nbsp;<a href="#a-z" class="backlink">back to top</a></small>
+				</h3>
+				<hr>
+
+                
+                <p class="section-desc">
+                    <small>NOTE</small> dcterms:issued is a leaf node.</p>
+                
+
+				<p class="section-desc"><b>Description</b>
+                    <br>
+                    
+                </p>
+
+                
+
+				
+
+
+
+				
+
+				
+
+				
+
+				
+
+
+                <small class="implementation_title">Implementation:</small>
+				<div class="implementation">
+					<code><p>@prefix dcterms: &lt;http://purl.org/dc/terms/&gt; .<br>@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .</p>
+
+<p>dcterms:issued a owl:AnnotationProperty .</p>
+
+<p></p></code>
+				</div>
+
+
+			</div>
+			
+
+			<div class="entity-div">
+
+				<h3 class="entity-section">Annotation Property: <a name="dcterms:license" href="#dcterms:license">dcterms:license</a>
+					<small>&nbsp;&nbsp;<a href="#a-z" class="backlink">back to top</a></small>
+				</h3>
+				<hr>
+
+                
+                <p class="section-desc">
+                    <small>NOTE</small> dcterms:license is a leaf node.</p>
+                
+
+				<p class="section-desc"><b>Description</b>
+                    <br>
+                    
+                </p>
+
+                
+
+				
+
+
+
+				
+
+				
+
+				
+
+				
+
+
+                <small class="implementation_title">Implementation:</small>
+				<div class="implementation">
+					<code><p>@prefix dcterms: &lt;http://purl.org/dc/terms/&gt; .<br>@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .</p>
+
+<p>dcterms:license a owl:AnnotationProperty .</p>
+
+<p></p></code>
+				</div>
+
+
+			</div>
+			
+
+			<div class="entity-div">
+
+				<h3 class="entity-section">Annotation Property: <a name="dcterms:modified" href="#dcterms:modified">dcterms:modified</a>
+					<small>&nbsp;&nbsp;<a href="#a-z" class="backlink">back to top</a></small>
+				</h3>
+				<hr>
+
+                
+                <p class="section-desc">
+                    <small>NOTE</small> dcterms:modified is a leaf node.</p>
+                
+
+				<p class="section-desc"><b>Description</b>
+                    <br>
+                    
+                </p>
+
+                
+
+				
+
+
+
+				
+
+				
+
+				
+
+				
+
+
+                <small class="implementation_title">Implementation:</small>
+				<div class="implementation">
+					<code><p>@prefix dcterms: &lt;http://purl.org/dc/terms/&gt; .<br>@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .</p>
+
+<p>dcterms:modified a owl:AnnotationProperty .</p>
+
+<p></p></code>
+				</div>
+
+
+			</div>
+			
+
+			<div class="entity-div">
+
+				<h3 class="entity-section">Annotation Property: <a name="dcterms:title" href="#dcterms:title">dcterms:title</a>
+					<small>&nbsp;&nbsp;<a href="#a-z" class="backlink">back to top</a></small>
+				</h3>
+				<hr>
+
+                
+                <p class="section-desc">
+                    <small>NOTE</small> dcterms:title is a leaf node.</p>
+                
+
+				<p class="section-desc"><b>Description</b>
+                    <br>
+                    
+                </p>
+
+                
+
+				
+
+
+
+				
+
+				
+
+				
+
+				
+
+
+                <small class="implementation_title">Implementation:</small>
+				<div class="implementation">
+					<code><p>@prefix dcterms: &lt;http://purl.org/dc/terms/&gt; .<br>@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .</p>
+
+<p>dcterms:title a owl:AnnotationProperty .</p>
+
+<p></p></code>
+				</div>
+
+
+			</div>
+			
+
+			<div class="entity-div">
+
+				<h3 class="entity-section">Annotation Property: <a name="vann:preferredNamespacePrefix" href="#vann:preferredNamespacePrefix">vann:preferredNamespacePrefix</a>
+					<small>&nbsp;&nbsp;<a href="#a-z" class="backlink">back to top</a></small>
+				</h3>
+				<hr>
+
+                
+                <p class="section-desc">
+                    <small>NOTE</small> vann:preferredNamespacePrefix is a leaf node.</p>
+                
+
+				<p class="section-desc"><b>Description</b>
+                    <br>
+                    
+                </p>
+
+                
+
+				
+
+
+
+				
+
+				
+
+				
+
+				
+
+
+                <small class="implementation_title">Implementation:</small>
+				<div class="implementation">
+					<code><p>@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .<br>@prefix vann: &lt;http://purl.org/vocab/vann/&gt; .</p>
+
+<p>vann:preferredNamespacePrefix a owl:AnnotationProperty .</p>
+
+<p></p></code>
+				</div>
+
+
+			</div>
+			
+
+			<div class="entity-div">
+
+				<h3 class="entity-section">Annotation Property: <a name="vann:preferredNamespaceUri" href="#vann:preferredNamespaceUri">vann:preferredNamespaceUri</a>
+					<small>&nbsp;&nbsp;<a href="#a-z" class="backlink">back to top</a></small>
+				</h3>
+				<hr>
+
+                
+                <p class="section-desc">
+                    <small>NOTE</small> vann:preferredNamespaceUri is a leaf node.</p>
+                
+
+				<p class="section-desc"><b>Description</b>
+                    <br>
+                    
+                </p>
+
+                
+
+				
+
+
+
+				
+
+				
+
+				
+
+				
+
+
+                <small class="implementation_title">Implementation:</small>
+				<div class="implementation">
+					<code><p>@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .<br>@prefix vann: &lt;http://purl.org/vocab/vann/&gt; .</p>
+
+<p>vann:preferredNamespaceUri a owl:AnnotationProperty .</p>
+
+<p></p></code>
+				</div>
+
+
+			</div>
+			
+
+			<div class="entity-div">
+
+				<h3 class="entity-section">Annotation Property: <a name="vs:term_status" href="#vs:term_status">vs:term_status</a>
+					<small>&nbsp;&nbsp;<a href="#a-z" class="backlink">back to top</a></small>
+				</h3>
+				<hr>
+
+                
+                <p class="section-desc">
+                    <small>NOTE</small> vs:term_status is a leaf node.</p>
+                
+
+				<p class="section-desc"><b>Description</b>
+                    <br>
+                    
+                </p>
+
+                
+
+				
+
+
+
+				
+
+				
+
+				
+
+				
+
+
+                <small class="implementation_title">Implementation:</small>
+				<div class="implementation">
+					<code><p>@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .<br>@prefix vs: &lt;http://www.w3.org/2003/06/sw-vocab-status/ns#&gt; .</p>
+
+<p>vs:term_status a owl:AnnotationProperty .</p>
+
+<p></p></code>
+				</div>
+
+
+			</div>
+			
+
+	
+
+
+
+
+	
+
+
+	
+
+
+
+
+
+
+	<hr>
+	<small>Ontology documentation automatically generated by <a class="greylink"  href="http://lambdamusic.github.io/Ontospy/">Ontospy</a> on 21st June 2022 18:58</small>
+
+
+</body>
+</html>
